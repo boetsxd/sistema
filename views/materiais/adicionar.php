@@ -20,7 +20,16 @@
 
     <center>
         <div class="container">
-
+<?php if (isset($_SESSION['erro']) && $_SESSION['erro']['codigo'] === 400): ?>
+        <div class="erro">
+            <p class="mensagem">
+                <?php
+                    echo $_SESSION['erro']['mensagem'];
+                    unset($_SESSION['error']);
+                ?>
+            </p>
+        </div>
+    <?php endif?>
             <form action="/sistema/" method="POST">
                 <h2>Produtos de Limpeza</h2>
 

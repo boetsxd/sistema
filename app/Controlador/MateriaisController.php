@@ -1,16 +1,22 @@
 <?php
+require_once __DIR__ . '\..\Modelo\Repositorio\MaterialRepositorio.php';
+
+
+
 /**
  * @param array $request = ['method' => 'GET', 'page' => ''] || ['method' => 'POST', 'action' => '']
  */
 function materiaisControlador(array $request)
 {
-    if ($request['method'] === 'POST') {
+    
+    if ($request['metodo'] === 'POST') {
+        
         adicionarProduto();
         exit;
     }
 
-    if ($request['method'] === 'GET') {
-        switch ($request['page']) {
+    if ($request['metodo'] === 'GET') {
+        switch ($request['pagina']) {
             case 'adicionar':
                 require __DIR__ . '/../../views/materiais/adicionar.php';
                 exit;
@@ -28,7 +34,7 @@ function materiaisControlador(array $request)
 
 function adicionarProduto()
 {
-    $nomeProduto       = trim($_POST['nome_do_produto'] ?? '');
+    $nomeProduto       = trim($_POST['nome_produto'] ?? '');
     $descricaoProduto  = trim($_POST['descricao'] ?? '');
     $quantidadeProduto = (int) ($_POST['quantidade_em_estoque'] ?? -1);
     $validadeProduto   = trim($_POST['data_validade']) ?? date('Y-m-d');
@@ -78,7 +84,11 @@ function adicionarProduto()
         header('Location: /sistema/');
         exit;
     }
-    echo '<script>alert("Operação não implementada. Retornando para a página inicial")</script>';
+
+    global $PDO;
+$materialRepo = new MaterialRepositorio($PDO); 
+    $id = $materialRepo->adicionarMaterial($nomeProduto, $quantidadeProduto, $descricaoProduto);
+    
     // TODO: Inserção no banco de dados
     definirPagina('/listar');
     /* TODO: Exibir erro no front-end
@@ -104,6 +114,11 @@ function adicionarProduto()
 
 function listarProdutos()
 {
+    global $PDO;
+    $materialRepo = new MaterialRepositorio($PDO);
+
+    $_SESSION['produto'] = $materialRepo->listarMateriais()[2];
+
     require __DIR__ . '/../../views/materiais/listar.php';
 }
 

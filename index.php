@@ -6,9 +6,13 @@ include_once __DIR__ . '/app/Utilidades/session.php';
 include_once __DIR__ . '/app/Controlador/MateriaisController.php';
 include_once __DIR__ . '/app/Controlador/LoginController.php';
 
+include_once __DIR__ . '/app/Database/Conexao.php';
+
 iniciarSessao();
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+
     if (! usuarioConectado()) {
         loginControlador(['metodo' => 'GET', 'pagina' => 'login']);
         exit;
